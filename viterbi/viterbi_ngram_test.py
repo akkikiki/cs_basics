@@ -1,9 +1,10 @@
 # coding: utf-8
-
+import sys, os, codecs
 from viterbi_ngram import *
 
+
 def load_ngram(f):
-  fopen = open(f, "r")
+  fopen = codecs.open(f, "r", "utf-8")
   dic = {}
   for line in fopen:
     word, prob = line[:-1].split("\t")
@@ -13,8 +14,11 @@ def load_ngram(f):
 
 if __name__ == "__main__":
   f = "ngrams.txt"
-  ngram_dic = load_ngram(f)
+  path = os.path.dirname(os.path.abspath(__file__))
+  ngram_dic = load_ngram(path + "/" + f)
   sentence = u"今日はいい天気だな"
-  sep = viterbi(sentence, ngram_dic, 2)
+  graph = construct_graph(sentence, ngram_dic)
+  sep = viterbi(graph, sentence, ngram_dic, 2)
+  sep.pop(0) #eos, popped
   for e in sep:
     print e
